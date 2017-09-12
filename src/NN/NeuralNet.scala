@@ -28,14 +28,14 @@ import java.util.Random
 import scala.math._
 
 /**
- * label£ºÄ¿±ê¾ØÕó
- * nna£ºÉñ¾­ÍøÂçÃ¿²ã½ÚµãµÄÊä³öÖµ,a(0),a(1),a(2)
- * error£ºÊä³ö²ãÓëÄ¿±êÖµµÄÎó²î¾ØÕó
+ * labelï¼šç›®æ ‡çŸ©é˜µ
+ * nnaï¼šç¥ç»ç½‘ç»œæ¯å±‚èŠ‚ç‚¹çš„è¾“å‡ºå€¼,a(0),a(1),a(2)
+ * errorï¼šè¾“å‡ºå±‚ä¸ç›®æ ‡å€¼çš„è¯¯å·®çŸ©é˜µ
  */
 case class NNLabel(label: BDM[Double], nna: ArrayBuffer[BDM[Double]], error: BDM[Double]) extends Serializable
 
 /**
- * ÅäÖÃ²ÎÊı
+ * é…ç½®å‚æ•°
  */
 case class NNConfig(
   size: Array[Int],
@@ -87,116 +87,116 @@ class NeuralNet(
   /**
    * size = architecture;
    * n = numel(nn.size);
-   * activation_function = sigm   Òşº¬²ãº¯ÊıActivation functions of hidden layers: 'sigm' (sigmoid) or 'tanh_opt' (optimal tanh).
-   * learningRate = 2;            Ñ§Ï°ÂÊlearning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
+   * activation_function = sigm   éšå«å±‚å‡½æ•°Activation functions of hidden layers: 'sigm' (sigmoid) or 'tanh_opt' (optimal tanh).
+   * learningRate = 2;            å­¦ä¹ ç‡learning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
    * momentum = 0.5;              Momentum
    * scaling_learningRate = 1;    Scaling factor for the learning rate (each epoch)
-   * weightPenaltyL2  = 0;        ÕıÔò»¯L2 regularization
-   * nonSparsityPenalty = 0;      È¨ÖØÏ¡Êè¶È³Í·£Öµon sparsity penalty
+   * weightPenaltyL2  = 0;        æ­£åˆ™åŒ–L2 regularization
+   * nonSparsityPenalty = 0;      æƒé‡ç¨€ç–åº¦æƒ©ç½šå€¼on sparsity penalty
    * sparsityTarget = 0.05;       Sparsity target
-   * inputZeroMaskedFraction = 0; ¼ÓÈënoise,Used for Denoising AutoEncoders
-   * dropoutFraction = 0;         Ã¿Ò»´Îmini-batchÑù±¾ÊäÈëÑµÁ·Ê±£¬Ëæ»úÈÓµôx%µÄÒşº¬²ã½ÚµãDropout level (http://www.cs.toronto.edu/~hinton/absps/dropout.pdf)
+   * inputZeroMaskedFraction = 0; åŠ å…¥noise,Used for Denoising AutoEncoders
+   * dropoutFraction = 0;         æ¯ä¸€æ¬¡mini-batchæ ·æœ¬è¾“å…¥è®­ç»ƒæ—¶ï¼Œéšæœºæ‰”æ‰x%çš„éšå«å±‚èŠ‚ç‚¹Dropout level (http://www.cs.toronto.edu/~hinton/absps/dropout.pdf)
    * testing = 0;                 Internal variable. nntest sets this to one.
-   * output = 'sigm';             Êä³öº¯Êıoutput unit 'sigm' (=logistic), 'softmax' and 'linear'   *
+   * output = 'sigm';             è¾“å‡ºå‡½æ•°output unit 'sigm' (=logistic), 'softmax' and 'linear'   *
    */
   def this() = this(NeuralNet.Architecture, 3, NeuralNet.Activation_Function, 2.0, 0.5, 1.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, NeuralNet.Output, Array(BDM.zeros[Double](1, 1)))
 
-  /** ÉèÖÃÉñ¾­ÍøÂç½á¹¹. Default: [10, 5, 1]. */
+  /** è®¾ç½®ç¥ç»ç½‘ç»œç»“æ„. Default: [10, 5, 1]. */
   def setSize(size: Array[Int]): this.type = {
     this.size = size
     this
   }
 
-  /** ÉèÖÃÉñ¾­ÍøÂç²ãÊı¾İ. Default: 3. */
+  /** è®¾ç½®ç¥ç»ç½‘ç»œå±‚æ•°æ®. Default: 3. */
   def setLayer(layer: Int): this.type = {
     this.layer = layer
     this
   }
 
-  /** ÉèÖÃÒşº¬²ãº¯Êı. Default: sigm. */
+  /** è®¾ç½®éšå«å±‚å‡½æ•°. Default: sigm. */
   def setActivation_function(activation_function: String): this.type = {
     this.activation_function = activation_function
     this
   }
 
-  /** ÉèÖÃÑ§Ï°ÂÊÒò×Ó. Default: 2. */
+  /** è®¾ç½®å­¦ä¹ ç‡å› å­. Default: 2. */
   def setLearningRate(learningRate: Double): this.type = {
     this.learningRate = learningRate
     this
   }
 
-  /** ÉèÖÃMomentum. Default: 0.5. */
+  /** è®¾ç½®Momentum. Default: 0.5. */
   def setMomentum(momentum: Double): this.type = {
     this.momentum = momentum
     this
   }
 
-  /** ÉèÖÃscaling_learningRate. Default: 1. */
+  /** è®¾ç½®scaling_learningRate. Default: 1. */
   def setScaling_learningRate(scaling_learningRate: Double): this.type = {
     this.scaling_learningRate = scaling_learningRate
     this
   }
 
-  /** ÉèÖÃÕıÔò»¯L2Òò×Ó. Default: 0. */
+  /** è®¾ç½®æ­£åˆ™åŒ–L2å› å­. Default: 0. */
   def setWeightPenaltyL2(weightPenaltyL2: Double): this.type = {
     this.weightPenaltyL2 = weightPenaltyL2
     this
   }
 
-  /** ÉèÖÃÈ¨ÖØÏ¡Êè¶È³Í·£Òò×Ó. Default: 0. */
+  /** è®¾ç½®æƒé‡ç¨€ç–åº¦æƒ©ç½šå› å­. Default: 0. */
   def setNonSparsityPenalty(nonSparsityPenalty: Double): this.type = {
     this.nonSparsityPenalty = nonSparsityPenalty
     this
   }
 
-  /** ÉèÖÃÈ¨ÖØÏ¡Êè¶ÈÄ¿±êÖµ. Default: 0.05. */
+  /** è®¾ç½®æƒé‡ç¨€ç–åº¦ç›®æ ‡å€¼. Default: 0.05. */
   def setSparsityTarget(sparsityTarget: Double): this.type = {
     this.sparsityTarget = sparsityTarget
     this
   }
 
-  /** ÉèÖÃÈ¨ÖØ¼ÓÈëÔëÉùÒò×Ó. Default: 0. */
+  /** è®¾ç½®æƒé‡åŠ å…¥å™ªå£°å› å­. Default: 0. */
   def setInputZeroMaskedFraction(inputZeroMaskedFraction: Double): this.type = {
     this.inputZeroMaskedFraction = inputZeroMaskedFraction
     this
   }
 
-  /** ÉèÖÃÈ¨ÖØDropoutÒò×Ó. Default: 0. */
+  /** è®¾ç½®æƒé‡Dropoutå› å­. Default: 0. */
   def setDropoutFraction(dropoutFraction: Double): this.type = {
     this.dropoutFraction = dropoutFraction
     this
   }
 
-  /** ÉèÖÃtesting. Default: 0. */
+  /** è®¾ç½®testing. Default: 0. */
   def setTesting(testing: Double): this.type = {
     this.testing = testing
     this
   }
 
-  /** ÉèÖÃÊä³öº¯Êı. Default: linear. */
+  /** è®¾ç½®è¾“å‡ºå‡½æ•°. Default: linear. */
   def setOutput_function(output_function: String): this.type = {
     this.output_function = output_function
     this
   }
 
-  /** ÉèÖÃ³õÊ¼È¨ÖØ. Default: 0. */
+  /** è®¾ç½®åˆå§‹æƒé‡. Default: 0. */
   def setInitW(initW: Array[BDM[Double]]): this.type = {
     this.initW = initW
     this
   }
 
   /**
-   * ÔËĞĞÉñ¾­ÍøÂçËã·¨.
+   * è¿è¡Œç¥ç»ç½‘ç»œç®—æ³•.
    */
   def NNtrain(train_d: RDD[(BDM[Double], BDM[Double])], opts: Array[Double]): NeuralNetModel = {
     val sc = train_d.sparkContext
     var initStartTime = System.currentTimeMillis()
     var initEndTime = System.currentTimeMillis()
-    // ²ÎÊıÅäÖÃ ¹ã²¥ÅäÖÃ
+    // å‚æ•°é…ç½® å¹¿æ’­é…ç½®
     var nnconfig = NNConfig(size, layer, activation_function, learningRate, momentum, scaling_learningRate,
       weightPenaltyL2, nonSparsityPenalty, sparsityTarget, inputZeroMaskedFraction, dropoutFraction, testing,
       output_function)
-    // ³õÊ¼»¯È¨ÖØ
+    // åˆå§‹åŒ–æƒé‡
     var nn_W = NeuralNet.InitialWeight(size)
     if (!((initW.length == 1) && (initW(0) == (BDM.zeros[Double](1, 1))))) {
       for (i <- 0 to initW.length - 1) {
@@ -212,21 +212,21 @@ class NeuralNet(
     //          println()
     //        }
 
-    // ³õÊ¼»¯Ã¿²ãµÄÆ½¾ù¼¤»î¶Ènn.p
+    // åˆå§‹åŒ–æ¯å±‚çš„å¹³å‡æ¿€æ´»åº¦nn.p
     // average activations (for use with sparsity)
     var nn_p = NeuralNet.InitialActiveP(size)
 
-    // Ñù±¾Êı¾İ»®·Ö£ºÑµÁ·Êı¾İ¡¢½»²æ¼ìÑéÊı¾İ
+    // æ ·æœ¬æ•°æ®åˆ’åˆ†ï¼šè®­ç»ƒæ•°æ®ã€äº¤å‰æ£€éªŒæ•°æ®
     val validation = opts(2)
     val splitW1 = Array(1.0 - validation, validation)
     val train_split1 = train_d.randomSplit(splitW1, System.nanoTime())
     val train_t = train_split1(0)
     val train_v = train_split1(1)
 
-    // m:ÑµÁ·Ñù±¾µÄÊıÁ¿
+    // m:è®­ç»ƒæ ·æœ¬çš„æ•°é‡
     val m = train_t.count
-    // batchsizeÊÇ×öbatch gradientÊ±ºòµÄ´óĞ¡ 
-    // ¼ÆËãbatchµÄÊıÁ¿
+    // batchsizeæ˜¯åšbatch gradientæ—¶å€™çš„å¤§å° 
+    // è®¡ç®—batchçš„æ•°é‡
     val batchsize = opts(0).toInt
     val numepochs = opts(1).toInt
     val numbatches = (m / batchsize).toInt
@@ -234,14 +234,14 @@ class NeuralNet(
     var n = 0
     var loss_train_e = Array.fill(numepochs)(0.0)
     var loss_val_e = Array.fill(numepochs)(0.0)
-    // numepochsÊÇÑ­»·µÄ´ÎÊı 
+    // numepochsæ˜¯å¾ªç¯çš„æ¬¡æ•° 
     for (i <- 1 to numepochs) {
       initStartTime = System.currentTimeMillis()
       val splitW2 = Array.fill(numbatches)(1.0 / numbatches)
-      // ¸ù¾İ·Ö×éÈ¨ÖØ£¬Ëæ»ú»®·ÖÃ¿×éÑù±¾Êı¾İ  
+      // æ ¹æ®åˆ†ç»„æƒé‡ï¼Œéšæœºåˆ’åˆ†æ¯ç»„æ ·æœ¬æ•°æ®  
       val bc_config = sc.broadcast(nnconfig)
       for (l <- 1 to numbatches) {
-        // È¨ÖØ 
+        // æƒé‡ 
         val bc_nn_W = sc.broadcast(nn_W)
         val bc_nn_vW = sc.broadcast(nn_vW)
 
@@ -261,15 +261,15 @@ class NeuralNet(
         //          println()
         //        }
 
-        // Ñù±¾»®·Ö
+        // æ ·æœ¬åˆ’åˆ†
         val train_split2 = train_t.randomSplit(splitW2, System.nanoTime())
         val batch_xy1 = train_split2(l - 1)
         //        val train_split3 = train_t.filter { f => (f._1 >= batchsize * (l - 1) + 1) && (f._1 <= batchsize * (l)) }
         //        val batch_xy1 = train_split3.map(f => (f._2, f._3))
         // Add noise to input (for use in denoising autoencoder)
-        // ¼ÓÈënoise£¬ÕâÊÇdenoising autoencoderĞèÒªÊ¹ÓÃµ½µÄ²¿·Ö  
-        // Õâ²¿·ÖÇë²Î¼û¡¶Extracting and Composing Robust Features with Denoising Autoencoders¡·ÕâÆªÂÛÎÄ  
-        // ¾ßÌå¼ÓÈëµÄ·½·¨¾ÍÊÇ°ÑÑµÁ·ÑùÀıÖĞµÄÒ»Ğ©Êı¾İµ÷Õû±äÎª0£¬inputZeroMaskedFraction±íÊ¾ÁËµ÷ÕûµÄ±ÈÀı  
+        // åŠ å…¥noiseï¼Œè¿™æ˜¯denoising autoencoderéœ€è¦ä½¿ç”¨åˆ°çš„éƒ¨åˆ†  
+        // è¿™éƒ¨åˆ†è¯·å‚è§ã€ŠExtracting and Composing Robust Features with Denoising Autoencodersã€‹è¿™ç¯‡è®ºæ–‡  
+        // å…·ä½“åŠ å…¥çš„æ–¹æ³•å°±æ˜¯æŠŠè®­ç»ƒæ ·ä¾‹ä¸­çš„ä¸€äº›æ•°æ®è°ƒæ•´å˜ä¸º0ï¼ŒinputZeroMaskedFractionè¡¨ç¤ºäº†è°ƒæ•´çš„æ¯”ä¾‹  
         //val randNoise = NeuralNet.RandMatrix(batch_x.numRows.toInt, batch_x.numCols.toInt, inputZeroMaskedFraction)
         val batch_xy2 = if (bc_config.value.inputZeroMaskedFraction != 0) {
           NeuralNet.AddNoise(batch_xy1, bc_config.value.inputZeroMaskedFraction)
@@ -283,7 +283,7 @@ class NeuralNet(
         //          println()
         //        }
 
-        // NNffÊÇ½øĞĞÇ°Ïò´«²¥
+        // NNffæ˜¯è¿›è¡Œå‰å‘ä¼ æ’­
         // nn = nnff(nn, batch_x, batch_y);
         val train_nnff = NeuralNet.NNff(batch_xy2, bc_config, bc_nn_W)
 
@@ -312,11 +312,11 @@ class NeuralNet(
         //          println()
         //        }
 
-        // sparsity¼ÆËã£¬¼ÆËãÃ¿²ã½ÚµãµÄÆ½¾ùÏ¡Êè¶È
+        // sparsityè®¡ç®—ï¼Œè®¡ç®—æ¯å±‚èŠ‚ç‚¹çš„å¹³å‡ç¨€ç–åº¦
         nn_p = NeuralNet.ActiveP(train_nnff, bc_config, nn_p)
         val bc_nn_p = sc.broadcast(nn_p)
 
-        // NNbpÊÇºóÏò´«²¥
+        // NNbpæ˜¯åå‘ä¼ æ’­
         // nn = nnbp(nn);
         val train_nnbp = NeuralNet.NNbp(train_nnff, bc_config, bc_nn_W, bc_nn_p)
 
@@ -355,7 +355,7 @@ class NeuralNet(
 
         // nn = NNapplygrads(nn) returns an neural network structure with updated
         // weights and biases
-        // ¸üĞÂÈ¨ÖØ²ÎÊı£ºw=w-¦Á*[dw + ¦Ëw]    
+        // æ›´æ–°æƒé‡å‚æ•°ï¼šw=w-Î±*[dw + Î»w]    
         val train_nnapplygrads = NeuralNet.NNapplygrads(train_nnbp, bc_config, bc_nn_W, bc_nn_vW)
         nn_W = train_nnapplygrads(0)
         nn_vW = train_nnapplygrads(1)
@@ -376,7 +376,7 @@ class NeuralNet(
         //        }
 
         // error and loss
-        // Êä³öÎó²î¼ÆËã
+        // è¾“å‡ºè¯¯å·®è®¡ç®—
         val loss1 = train_nnff.map(f => f._1.error)
         val (loss2, counte) = loss1.treeAggregate((0.0, 0L))(
           seqOp = (c, v) => {
@@ -397,7 +397,7 @@ class NeuralNet(
         L(n) = Loss * 0.5
         n = n + 1
       }
-      // ¼ÆËã±¾´Îµü´úµÄÑµÁ·Îó²î¼°½»²æ¼ìÑéÎó²î
+      // è®¡ç®—æœ¬æ¬¡è¿­ä»£çš„è®­ç»ƒè¯¯å·®åŠäº¤å‰æ£€éªŒè¯¯å·®
       // Full-batch train mse
       val evalconfig = NNConfig(size, layer, activation_function, learningRate, momentum, scaling_learningRate,
         weightPenaltyL2, nonSparsityPenalty, sparsityTarget, inputZeroMaskedFraction, dropoutFraction, 1.0,
@@ -405,14 +405,14 @@ class NeuralNet(
       loss_train_e(i - 1) = NeuralNet.NNeval(train_t, sc.broadcast(evalconfig), sc.broadcast(nn_W))
       if (validation > 0) loss_val_e(i - 1) = NeuralNet.NNeval(train_v, sc.broadcast(evalconfig), sc.broadcast(nn_W))
 
-      // ¸üĞÂÑ§Ï°Òò×Ó
+      // æ›´æ–°å­¦ä¹ å› å­
       // nn.learningRate = nn.learningRate * nn.scaling_learningRate;
       nnconfig = NNConfig(size, layer, activation_function, nnconfig.learningRate * nnconfig.scaling_learningRate, momentum, scaling_learningRate,
         weightPenaltyL2, nonSparsityPenalty, sparsityTarget, inputZeroMaskedFraction, dropoutFraction, testing,
         output_function)
       initEndTime = System.currentTimeMillis()
 
-      // ´òÓ¡Êä³ö½á¹û
+      // æ‰“å°è¾“å‡ºç»“æœ
       printf("epoch: numepochs = %d , Took = %d seconds; Full-batch train mse = %f, val mse = %f.\n", i, scala.math.ceil((initEndTime - initStartTime).toDouble / 1000).toLong, loss_train_e(i - 1), loss_val_e(i - 1))
     }
     val configok = NNConfig(size, layer, activation_function, learningRate, momentum, scaling_learningRate,
@@ -434,8 +434,8 @@ object NeuralNet extends Serializable {
   val Architecture = Array(10, 5, 1)
 
   /**
-   * Ôö¼ÓËæ»úÔëÉù
-   * ÈôËæ»úÖµ>=Fraction£¬Öµ²»±ä£¬·ñÔò¸ÄÎª0
+   * å¢åŠ éšæœºå™ªå£°
+   * è‹¥éšæœºå€¼>=Fractionï¼Œå€¼ä¸å˜ï¼Œå¦åˆ™æ”¹ä¸º0
    */
   def AddNoise(rdd: RDD[(BDM[Double], BDM[Double])], Fraction: Double): RDD[(BDM[Double], BDM[Double])] = {
     val addNoise = rdd.map { f =>
@@ -451,11 +451,11 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * ³õÊ¼»¯È¨ÖØ
-   * ³õÊ¼»¯ÎªÒ»¸öºÜĞ¡µÄ¡¢½Ó½üÁãµÄËæ»úÖµ
+   * åˆå§‹åŒ–æƒé‡
+   * åˆå§‹åŒ–ä¸ºä¸€ä¸ªå¾ˆå°çš„ã€æ¥è¿‘é›¶çš„éšæœºå€¼
    */
   def InitialWeight2(size: Array[Int]): Array[BDM[Double]] = {
-    // ³õÊ¼»¯È¨ÖØ²ÎÊı
+    // åˆå§‹åŒ–æƒé‡å‚æ•°
     // weights and weight momentum
     // nn.W{i - 1} = (rand(nn.size(i), nn.size(i - 1)+1) - 0.5) * 2 * 4 * sqrt(6 / (nn.size(i) + nn.size(i - 1)));
     // nn.vW{i - 1} = zeros(size(nn.W{i - 1}));
@@ -468,7 +468,7 @@ object NeuralNet extends Serializable {
     nn_W.toArray
   }
   def InitialWeight(size: Array[Int]): Array[BDM[Double]] = {
-    // ³õÊ¼»¯È¨ÖØ²ÎÊı
+    // åˆå§‹åŒ–æƒé‡å‚æ•°
     // weights and weight momentum
     // nn.W{i - 1} = (rand(nn.size(i), nn.size(i - 1)+1) - 0.5) * 2 * 4 * sqrt(6 / (nn.size(i) + nn.size(i - 1)));
     // nn.vW{i - 1} = zeros(size(nn.W{i - 1}));
@@ -487,11 +487,11 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * ³õÊ¼»¯È¨ÖØvW
-   * ³õÊ¼»¯Îª0
+   * åˆå§‹åŒ–æƒé‡vW
+   * åˆå§‹åŒ–ä¸º0
    */
   def InitialWeightV(size: Array[Int]): Array[BDM[Double]] = {
-    // ³õÊ¼»¯È¨ÖØ²ÎÊı
+    // åˆå§‹åŒ–æƒé‡å‚æ•°
     // weights and weight momentum
     // nn.vW{i - 1} = zeros(size(nn.W{i - 1}));
     val n = size.length
@@ -504,11 +504,11 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * ³õÊ¼Ã¿Ò»²ãµÄÆ½¾ù¼¤»î¶È
-   * ³õÊ¼»¯Îª0
+   * åˆå§‹æ¯ä¸€å±‚çš„å¹³å‡æ¿€æ´»åº¦
+   * åˆå§‹åŒ–ä¸º0
    */
   def InitialActiveP(size: Array[Int]): Array[BDM[Double]] = {
-    // ³õÊ¼Ã¿Ò»²ãµÄÆ½¾ù¼¤»î¶È
+    // åˆå§‹æ¯ä¸€å±‚çš„å¹³å‡æ¿€æ´»åº¦
     // average activations (for use with sparsity)
     // nn.p{i}     = zeros(1, nn.size(i));  
     val n = size.length
@@ -522,8 +522,8 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * Ëæ»úÈÃÍøÂçÄ³Ğ©Òşº¬²ã½ÚµãµÄÈ¨ÖØ²»¹¤×÷
-   * ÈôËæ»úÖµ>=Fraction£¬¾ØÕóÖµ²»±ä£¬·ñÔò¸ÄÎª0
+   * éšæœºè®©ç½‘ç»œæŸäº›éšå«å±‚èŠ‚ç‚¹çš„æƒé‡ä¸å·¥ä½œ
+   * è‹¥éšæœºå€¼>=Fractionï¼ŒçŸ©é˜µå€¼ä¸å˜ï¼Œå¦åˆ™æ”¹ä¸º0
    */
   def DropoutWeight(matrix: BDM[Double], Fraction: Double): Array[BDM[Double]] = {
     val aa = BDM.rand[Double](matrix.rows, matrix.cols)
@@ -535,7 +535,7 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * sigm¼¤»îº¯Êı
+   * sigmæ¿€æ´»å‡½æ•°
    * X = 1./(1+exp(-P));
    */
   def sigm(matrix: BDM[Double]): BDM[Double] = {
@@ -544,7 +544,7 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * tanh¼¤»îº¯Êı
+   * tanhæ¿€æ´»å‡½æ•°
    * f=1.7159*tanh(2/3.*A);
    */
   def tanh_opt(matrix: BDM[Double]): BDM[Double] = {
@@ -553,15 +553,15 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * nnffÊÇ½øĞĞÇ°Ïò´«²¥
-   * ¼ÆËãÉñ¾­ÍøÂçÖĞµÄÃ¿¸ö½ÚµãµÄÊä³öÖµ;
+   * nnffæ˜¯è¿›è¡Œå‰å‘ä¼ æ’­
+   * è®¡ç®—ç¥ç»ç½‘ç»œä¸­çš„æ¯ä¸ªèŠ‚ç‚¹çš„è¾“å‡ºå€¼;
    */
   def NNff(
     batch_xy2: RDD[(BDM[Double], BDM[Double])],
     bc_config: org.apache.spark.broadcast.Broadcast[NNConfig],
     bc_nn_W: org.apache.spark.broadcast.Broadcast[Array[BDM[Double]]]): RDD[(NNLabel, Array[BDM[Double]])] = {
-    // µÚ1²ã:a(1)=[1 x]
-    // Ôö¼ÓÆ«ÖÃÏîb
+    // ç¬¬1å±‚:a(1)=[1 x]
+    // å¢åŠ åç½®é¡¹b
     val train_data1 = batch_xy2.map { f =>
       val lable = f._1
       val features = f._2
@@ -588,7 +588,7 @@ object NeuralNet extends Serializable {
     //    }
 
     // feedforward pass
-    // µÚ2ÖÁn-1²ã¼ÆËã£¬a(i)=f(a(i-1)*w(i-1)')
+    // ç¬¬2è‡³n-1å±‚è®¡ç®—ï¼Œa(i)=f(a(i-1)*w(i-1)')
     //val tmp1 = train_data1.map(f => f.nna(0).data).take(1)(0)
     //val tmp2 = new BDM(1, tmp1.length, tmp1)
     //val nn_a = ArrayBuffer[BDM[Double]]()
@@ -598,7 +598,7 @@ object NeuralNet extends Serializable {
       val dropOutMask = ArrayBuffer[BDM[Double]]()
       dropOutMask += new BDM[Double](1, 1, Array(0.0))
       for (j <- 1 to bc_config.value.layer - 2) {
-        // ¼ÆËãÃ¿²ãÊä³ö
+        // è®¡ç®—æ¯å±‚è¾“å‡º
         // Calculate the unit's outputs (including the bias term)
         // nn.a{i} = sigm(nn.a{i - 1} * nn.W{i - 1}')
         // nn.a{i} = tanh_opt(nn.a{i - 1} * nn.W{i - 1}');            
@@ -614,10 +614,10 @@ object NeuralNet extends Serializable {
             //val aw2 = Btanh(aw1 * (2.0 / 3.0)) * 1.7159
             aw2
         }
-        // dropout¼ÆËã
-        // DropoutÊÇÖ¸ÔÚÄ£ĞÍÑµÁ·Ê±Ëæ»úÈÃÍøÂçÄ³Ğ©Òşº¬²ã½ÚµãµÄÈ¨ÖØ²»¹¤×÷£¬²»¹¤×÷µÄÄÇĞ©½Úµã¿ÉÒÔÔİÊ±ÈÏÎª²»ÊÇÍøÂç½á¹¹µÄÒ»²¿·Ö
-        // µ«ÊÇËüµÄÈ¨ÖØµÃ±£ÁôÏÂÀ´£¨Ö»ÊÇÔİÊ±²»¸üĞÂ¶øÒÑ£©£¬ÒòÎªÏÂ´ÎÑù±¾ÊäÈëÊ±Ëü¿ÉÄÜÓÖµÃ¹¤×÷ÁË
-        // ²ÎÕÕ http://www.cnblogs.com/tornadomeet/p/3258122.html   
+        // dropoutè®¡ç®—
+        // Dropoutæ˜¯æŒ‡åœ¨æ¨¡å‹è®­ç»ƒæ—¶éšæœºè®©ç½‘ç»œæŸäº›éšå«å±‚èŠ‚ç‚¹çš„æƒé‡ä¸å·¥ä½œï¼Œä¸å·¥ä½œçš„é‚£äº›èŠ‚ç‚¹å¯ä»¥æš‚æ—¶è®¤ä¸ºä¸æ˜¯ç½‘ç»œç»“æ„çš„ä¸€éƒ¨åˆ†
+        // ä½†æ˜¯å®ƒçš„æƒé‡å¾—ä¿ç•™ä¸‹æ¥ï¼ˆåªæ˜¯æš‚æ—¶ä¸æ›´æ–°è€Œå·²ï¼‰ï¼Œå› ä¸ºä¸‹æ¬¡æ ·æœ¬è¾“å…¥æ—¶å®ƒå¯èƒ½åˆå¾—å·¥ä½œäº†
+        // å‚ç…§ http://www.cnblogs.com/tornadomeet/p/3258122.html   
         val dropoutai = if (bc_config.value.dropoutFraction > 0) {
           if (bc_config.value.testing == 1) {
             val nnai2 = nnai1 * (1.0 - bc_config.value.dropoutFraction)
@@ -632,7 +632,7 @@ object NeuralNet extends Serializable {
         val nnai2 = dropoutai(1)
         dropOutMask += dropoutai(0)
         // Add the bias term
-        // Ôö¼ÓÆ«ÖÃÏîb
+        // å¢åŠ åç½®é¡¹b
         // nn.a{i} = [ones(m,1) nn.a{i}];
         val Bm1 = BDM.ones[Double](nnai2.rows, 1)
         val nnai3 = BDM.horzcat(Bm1, nnai2)
@@ -641,7 +641,7 @@ object NeuralNet extends Serializable {
       (NNLabel(f.label, nn_a, f.error), dropOutMask.toArray)
     }
 
-    // Êä³ö²ã¼ÆËã
+    // è¾“å‡ºå±‚è®¡ç®—
     val train_data3 = train_data2.map { f =>
       val nn_a = f._1.nna
       // nn.a{n} = sigm(nn.a{n - 1} * nn.W{n - 1}');
@@ -663,7 +663,7 @@ object NeuralNet extends Serializable {
     }
 
     // error and loss
-    // Êä³öÎó²î¼ÆËã
+    // è¾“å‡ºè¯¯å·®è®¡ç®—
     // nn.e = y - nn.a{n};
     // val nn_e = batch_y - nnan
     val train_data4 = train_data3.map { f =>
@@ -676,8 +676,8 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * sparsity¼ÆËã£¬ÍøÂçÏ¡Êè¶È
-   * ¼ÆËãÃ¿¸ö½ÚµãµÄÆ½¾ùÖµ
+   * sparsityè®¡ç®—ï¼Œç½‘ç»œç¨€ç–åº¦
+   * è®¡ç®—æ¯ä¸ªèŠ‚ç‚¹çš„å¹³å‡å€¼
    */
   def ActiveP(
     train_nnff: RDD[(NNLabel, Array[BDM[Double]])],
@@ -686,7 +686,7 @@ object NeuralNet extends Serializable {
     val nn_p = ArrayBuffer[BDM[Double]]()
     nn_p += BDM.zeros[Double](1, 1)
     // calculate running exponential activations for use with sparsity
-    // sparsity¼ÆËã£¬¼ÆËãsparsity£¬nonSparsityPenalty ÊÇ¶ÔÃ»´ïµ½sparsitytargetµÄ²ÎÊıµÄ³Í·£ÏµÊı 
+    // sparsityè®¡ç®—ï¼Œè®¡ç®—sparsityï¼ŒnonSparsityPenalty æ˜¯å¯¹æ²¡è¾¾åˆ°sparsitytargetçš„å‚æ•°çš„æƒ©ç½šç³»æ•° 
     for (i <- 1 to bc_config.value.layer - 1) {
       val pi1 = train_nnff.map(f => f._1.nna(i))
       val initpi = BDM.zeros[Double](1, bc_config.value.size(i))
@@ -695,7 +695,13 @@ object NeuralNet extends Serializable {
           // c: (nnasum, count), v: (nna)
           val nna1 = c._1
           val nna2 = v
-          val nnasum = nna1 + nna2
+          val numCols = nna2.cols
+          val nnasum = numCols match {
+            case numCols if(numCols>1) =>
+              nna1 + nna2(::, 1 to numCols-1)
+            case numCols if(numCols==1) =>
+              nna1 + nna2
+          }
           (nnasum, c._2 + 1)
         },
         combOp = (c1, c2) => {
@@ -707,22 +713,29 @@ object NeuralNet extends Serializable {
         })
       val piAvg = piSum / miniBatchSize.toDouble
       val oldpi = nn_p_old(i)
-      val newpi = (piAvg * 0.01) + (oldpi * 0.09)
+      val oldPiCol = oldpi.cols
+      val newpi = oldPiCol match {
+        case oldPiCol if(oldPiCol>piAvgCol) =>
+          (piAvg * 0.01) + (oldpi(::, 1 to oldPiCol-1) * 0.09)
+        case oldPiCol if(oldPiCol==piAvgCol) =>
+          (piAvg * 0.01) + (oldpi * 0.09)
+      }
+      //val newpi = (piAvg * 0.01) + (oldpi * 0.09)
       nn_p += newpi
     }
     nn_p.toArray
   }
 
   /**
-   * NNbpÊÇºóÏò´«²¥
-   * ¼ÆËãÈ¨ÖØµÄÆ½¾ùÆ«µ¼Êı
+   * NNbpæ˜¯åå‘ä¼ æ’­
+   * è®¡ç®—æƒé‡çš„å¹³å‡åå¯¼æ•°
    */
   def NNbp(
     train_nnff: RDD[(NNLabel, Array[BDM[Double]])],
     bc_config: org.apache.spark.broadcast.Broadcast[NNConfig],
     bc_nn_W: org.apache.spark.broadcast.Broadcast[Array[BDM[Double]]],
     bc_nn_p: org.apache.spark.broadcast.Broadcast[Array[BDM[Double]]]): Array[BDM[Double]] = {
-    // µÚn²ãÆ«µ¼Êı£ºd(n)=-(y-a(n))*f'(z)£¬sigmoidº¯Êıf'(z)±í´ïÊ½:f'(z)=f(z)*[1-f(z)]
+    // ç¬¬nå±‚åå¯¼æ•°ï¼šd(n)=-(y-a(n))*f'(z)ï¼Œsigmoidå‡½æ•°f'(z)è¡¨è¾¾å¼:f'(z)=f(z)*[1-f(z)]
     // sigm: d{n} = - nn.e .* (nn.a{n} .* (1 - nn.a{n}));
     // {'softmax','linear'}: d{n} = - nn.e;
     val train_data5 = train_nnff.map { f =>
@@ -739,10 +752,10 @@ object NeuralNet extends Serializable {
       dn += nndn
       (f._1, f._2, dn)
     }
-    // µÚn-1ÖÁµÚ2²ãµ¼Êı£ºd(n)=-(w(n)*d(n+1))*f'(z) 
+    // ç¬¬n-1è‡³ç¬¬2å±‚å¯¼æ•°ï¼šd(n)=-(w(n)*d(n+1))*f'(z) 
     val train_data6 = train_data5.map { f =>
-      // ¼ÙÉè f(z) ÊÇsigmoidº¯Êı f(z)=1/[1+e^(-z)]£¬f'(z)±í´ïÊ½£¬f'(z)=f(z)*[1-f(z)]    
-      // ¼ÙÉè f(z) tanh f(z)=1.7159*tanh(2/3.*A) £¬f'(z)±í´ïÊ½£¬f'(z)=1.7159 * 2/3 * (1 - 1/(1.7159)^2 * f(z).^2)   
+      // å‡è®¾ f(z) æ˜¯sigmoidå‡½æ•° f(z)=1/[1+e^(-z)]ï¼Œf'(z)è¡¨è¾¾å¼ï¼Œf'(z)=f(z)*[1-f(z)]    
+      // å‡è®¾ f(z) tanh f(z)=1.7159*tanh(2/3.*A) ï¼Œf'(z)è¡¨è¾¾å¼ï¼Œf'(z)=1.7159 * 2/3 * (1 - 1/(1.7159)^2 * f(z).^2)   
       //val di = ArrayBuffer( BDM((1.765226346140333)))
       //      val nn_a = ArrayBuffer[BDM[Double]]()
       //      val a1=BDM((1.0,0.312605257000000,0.848582961000000,0.999014768000000,0.278330771000000,0.462701179000000))
@@ -755,7 +768,7 @@ object NeuralNet extends Serializable {
       val di = f._3
       val dropout = f._2
       for (i <- (bc_config.value.layer - 2) to 1 by -1) {
-        // f'(z)±í´ïÊ½
+        // f'(z)è¡¨è¾¾å¼
         val nnd_act = bc_config.value.activation_function match {
           case "sigm" =>
             val d_act = nn_a(i) :* (1.0 - nn_a(i))
@@ -765,7 +778,7 @@ object NeuralNet extends Serializable {
             val d_act = fz2 * (1.7159 * (2.0 / 3.0))
             d_act
         }
-        // Ï¡Êè¶È³Í·£Îó²î¼ÆËã:-(t/p)+(1-t)/(1-p)
+        // ç¨€ç–åº¦æƒ©ç½šè¯¯å·®è®¡ç®—:-(t/p)+(1-t)/(1-p)
         // sparsityError = [zeros(size(nn.a{i},1),1) nn.nonSparsityPenalty * (-nn.sparsityTarget ./ pi + (1 - nn.sparsityTarget) ./ (1 - pi))];
         val sparsityError = if (bc_config.value.nonSparsityPenalty > 0) {
           val nn_pi1 = bc_nn_p.value(i)
@@ -778,7 +791,7 @@ object NeuralNet extends Serializable {
           val sparsity = BDM.zeros[Double](nn_pi1.rows, nn_pi1.cols + 1)
           sparsity
         }
-        // µ¼Êı£ºd(n)=-( w(n)*d(n+1)+ sparsityError )*f'(z) 
+        // å¯¼æ•°ï¼šd(n)=-( w(n)*d(n+1)+ sparsityError )*f'(z) 
         // d{i} = (d{i + 1} * nn.W{i} + sparsityError) .* d_act;
         val W1 = bc_nn_W.value(i)
         val nndi1 = if (i + 1 == bc_config.value.layer - 1) {
@@ -802,7 +815,7 @@ object NeuralNet extends Serializable {
         di += nndi2
       }
       di += BDM.zeros(1, 1)
-      // ¼ÆËã×îÖÕĞèÒªµÄÆ«µ¼ÊıÖµ£ºdw(n)=(1/m)¡Æd(n+1)*a(n)
+      // è®¡ç®—æœ€ç»ˆéœ€è¦çš„åå¯¼æ•°å€¼ï¼šdw(n)=(1/m)âˆ‘d(n+1)*a(n)
       //  nn.dW{i} = (d{i + 1}' * nn.a{i}) / size(d{i + 1}, 1);
       val dw = ArrayBuffer[BDM[Double]]()
       for (i <- 0 to bc_config.value.layer - 2) {
@@ -855,7 +868,7 @@ object NeuralNet extends Serializable {
         }
         (sumgrad, c1._2 + c2._2)
       })
-    // ÇóÆ½¾ùÖµ
+    // æ±‚å¹³å‡å€¼
     val gradientAvg = ArrayBuffer[BDM[Double]]()
     for (i <- 0 to bc_config.value.layer - 2) {
       val Bm1 = gradientSum(i)
@@ -866,8 +879,8 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * NNapplygradsÊÇÈ¨ÖØ¸üĞÂ
-   * È¨ÖØ¸üĞÂ
+   * NNapplygradsæ˜¯æƒé‡æ›´æ–°
+   * æƒé‡æ›´æ–°
    */
   def NNapplygrads(
     train_nnbp: Array[BDM[Double]],
@@ -876,7 +889,7 @@ object NeuralNet extends Serializable {
     bc_nn_vW: org.apache.spark.broadcast.Broadcast[Array[BDM[Double]]]): Array[Array[BDM[Double]]] = {
     // nn = nnapplygrads(nn) returns an neural network structure with updated
     // weights and biases
-    // ¸üĞÂÈ¨ÖØ²ÎÊı£ºw=w-¦Á*[dw + ¦Ëw]    
+    // æ›´æ–°æƒé‡å‚æ•°ï¼šw=w-Î±*[dw + Î»w]    
     val W_a = ArrayBuffer[BDM[Double]]()
     val vW_a = ArrayBuffer[BDM[Double]]()
     for (i <- 0 to bc_config.value.layer - 2) {
@@ -914,18 +927,18 @@ object NeuralNet extends Serializable {
   }
 
   /**
-   * nnevalÊÇ½øĞĞÇ°Ïò´«²¥²¢¼ÆËãÊä³öÎó²î
-   * ¼ÆËãÉñ¾­ÍøÂçÖĞµÄÃ¿¸ö½ÚµãµÄÊä³öÖµ£¬²¢¼ÆËãÆ½¾ùÎó²î;
+   * nnevalæ˜¯è¿›è¡Œå‰å‘ä¼ æ’­å¹¶è®¡ç®—è¾“å‡ºè¯¯å·®
+   * è®¡ç®—ç¥ç»ç½‘ç»œä¸­çš„æ¯ä¸ªèŠ‚ç‚¹çš„è¾“å‡ºå€¼ï¼Œå¹¶è®¡ç®—å¹³å‡è¯¯å·®;
    */
   def NNeval(
     batch_xy: RDD[(BDM[Double], BDM[Double])],
     bc_config: org.apache.spark.broadcast.Broadcast[NNConfig],
     bc_nn_W: org.apache.spark.broadcast.Broadcast[Array[BDM[Double]]]): Double = {
-    // NNffÊÇ½øĞĞÇ°Ïò´«²¥
+    // NNffæ˜¯è¿›è¡Œå‰å‘ä¼ æ’­
     // nn = nnff(nn, batch_x, batch_y);
     val train_nnff = NeuralNet.NNff(batch_xy, bc_config, bc_nn_W)
     // error and loss
-    // Êä³öÎó²î¼ÆËã
+    // è¾“å‡ºè¯¯å·®è®¡ç®—
     val loss1 = train_nnff.map(f => f._1.error)
     val (loss2, counte) = loss1.treeAggregate((0.0, 0L))(
       seqOp = (c, v) => {
